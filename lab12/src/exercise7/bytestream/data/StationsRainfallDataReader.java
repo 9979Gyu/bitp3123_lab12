@@ -2,6 +2,7 @@
  * 
  */
 package exercise6.bytestream.data;
+
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,63 +22,58 @@ public class StationsRainfallDataReader {
         String sourceFile = "stationsRainfallData.txt";
         System.out.println("Read data from " + sourceFile);
         
-        //	Declare variables
-        int counter = 0;
-        
         try {
 
             //	2. Construct the object for the input stream
             DataInputStream dis = new DataInputStream(new FileInputStream(sourceFile));
             
-            //	Declare variable
+            //	Declare variables
+            int numStations = 0, numDistricts = 0;
             String formattedAverage;
             
-            System.out.print("\n\nStation ID\tStation Name\t\tDistrict Name\t");
+            System.out.print("\nStation ID\tStation Name\t\t\tDistrict Name\t\t");
             
             //	3. Read the data from the input stream
             for (int i = 0; i < 6; i++) {
                 String date = dis.readUTF();
-                System.out.printf("%-10s\t", date);
+                System.out.print(date + "\t");
             }
             
-            System.out.print("Average");
-            
-            // Read the data
+            System.out.print("Average\n");
+
+            // Read and display the data
             while (dis.available() > 0) {
             	
-            	counter ++;
-            	
                 String stationId = dis.readUTF();
-                System.out.printf("\n%-10s\t", stationId);
-                
                 String stationName = dis.readUTF();
-                System.out.printf("%-20s\t", stationName);
-                
                 String districtName = dis.readUTF();
-                System.out.printf("%-10s\t", districtName);
+
+                System.out.print(stationId + "\t\t" + 
+                stationName + "\t\t\t" + districtName + "\t\t");
+                
+                numStations ++;
 
                 double rainfall = 0, totalRainfall = 0;
                 
-            	for (int column = 0; column < 6; column ++) {
+                for (int i = 0; i < 6; i++) {
 
-                	rainfall = dis.readDouble();             	
-                	System.out.printf("%-10.2f\t", rainfall);
+                	rainfall = dis.readDouble();
                     totalRainfall += rainfall;
-                  
+                    System.out.print(rainfall + "\t\t"); 
+                    
                 }
-            	
-
+                
                 //	get the returned value from computeAverage
                 formattedAverage = computeAverage(totalRainfall, 6);
                 
-                System.out.printf("%-30s\n", formattedAverage);
+                System.out.print(formattedAverage + "\n");
 
             }
             
-           
             //	indicate the number of stations and districts
-            System.out.println("\n\nNumber of stations : " + counter +
-            		"\nNumber of districts : " + counter/2);
+            numDistricts = numStations/2;
+            System.out.println("\nNumber of stations : " + numStations +
+            		"\nNumber of districts : " + numDistricts);
 
             // 4. Close the DataInputStream
             dis.close();
